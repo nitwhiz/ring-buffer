@@ -120,3 +120,94 @@ func TestBuffer_Overflow(t *testing.T) {
 		t.Fatal("err != ErrOverflow")
 	}
 }
+
+func TestBuffer_Len(t *testing.T) {
+	buf := NewBuffer[int](5)
+
+	l := buf.Len()
+
+	if l != 0 {
+		t.Fatal("l != 0")
+	}
+
+	_ = buf.WriteOne(1)
+	_ = buf.WriteOne(2)
+	_ = buf.WriteOne(3)
+
+	l = buf.Len()
+
+	if l != 3 {
+		t.Fatal("l != 3")
+	}
+
+	_, _ = buf.ReadOne()
+
+	l = buf.Len()
+
+	if l != 2 {
+		t.Fatal("l != 2")
+	}
+
+	_ = buf.WriteOne(4)
+	_ = buf.WriteOne(5)
+
+	l = buf.Len()
+
+	if l != 4 {
+		t.Fatal("l != 4")
+	}
+
+	_, _ = buf.ReadOne()
+	_, _ = buf.ReadOne()
+
+	_ = buf.WriteOne(6)
+	_ = buf.WriteOne(7)
+
+	l = buf.Len()
+
+	if l != 4 {
+		t.Fatal("l != 4")
+	}
+
+	_, _ = buf.Read(make([]int, 4))
+
+	l = buf.Len()
+
+	if l != 0 {
+		t.Fatal("l != 0")
+	}
+}
+
+func TestBuffer_Write_Wrap(t *testing.T) {
+	buf := NewBuffer[int](3)
+
+	_, _ = buf.Write([]int{1, 2})
+
+	_, _ = buf.Read(make([]int, 1))
+
+	_ = buf.WriteOne(3)
+
+	_, _ = buf.ReadOne()
+
+	_ = buf.WriteOne(4)
+
+	three, err := buf.ReadOne()
+
+	if three != 3 {
+		t.Fatal("three != 3")
+	}
+
+	if err != nil {
+		t.Fatal("err != nil")
+	}
+
+	four, err := buf.ReadOne()
+
+	if four != 4 {
+		t.Fatal("four != 4")
+	}
+
+	if err != nil {
+		t.Fatal("err != nil")
+	}
+}

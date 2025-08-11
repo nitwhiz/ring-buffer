@@ -26,6 +26,18 @@ func NewBuffer[T any](size int) *Buffer[T] {
 	}
 }
 
+func (b *Buffer[T]) Len() int {
+	if b.readPtr == b.writePtr {
+		return 0
+	}
+
+	if b.readPtr < b.writePtr {
+		return b.writePtr - b.readPtr
+	}
+
+	return b.size - b.readPtr + b.writePtr
+}
+
 func (b *Buffer[T]) read() (element T, err error) {
 	if b.readPtr == b.writePtr {
 		err = ErrEOF

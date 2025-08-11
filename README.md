@@ -20,5 +20,3 @@ data := make([]int, 2)
 n, err = buf.Read(data)
 three, err := buf.ReadOne()
 ```
-
-There is also a concurrent-safe version with `ring.NewBlockingBuffer`, which only allows a single `Read`/`ReadOne` or `Write`/`WriteOne` at a time.

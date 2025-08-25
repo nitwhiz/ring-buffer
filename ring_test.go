@@ -211,3 +211,61 @@ func TestBuffer_Write_Wrap(t *testing.T) {
 		t.Fatal("err != nil")
 	}
 }
+
+func TestBuffer_Peek(t *testing.T) {
+	buf := NewBuffer[int](6)
+
+	_, _ = buf.Write([]int{1, 2, 3})
+
+	one, _ := buf.Peek(0)
+
+	if one != 1 {
+		t.Fatal("one != 1")
+	}
+
+	two, _ := buf.Peek(1)
+
+	if two != 2 {
+		t.Fatal("two != 2")
+	}
+
+	three, _ := buf.Peek(2)
+
+	if three != 3 {
+		t.Fatal("three != 3")
+	}
+
+	_, _ = buf.Read(make([]int, 2))
+
+	_, _ = buf.Write([]int{4, 5, 6, 7})
+
+	three, _ = buf.Peek(0)
+
+	if three != 3 {
+		t.Fatal("three != 3")
+	}
+
+	four, _ := buf.Peek(1)
+
+	if four != 4 {
+		t.Fatal("four != 4")
+	}
+
+	five, _ := buf.Peek(2)
+
+	if five != 5 {
+		t.Fatal("five != 5")
+	}
+
+	six, _ := buf.Peek(3)
+
+	if six != 6 {
+		t.Fatal("six != 6")
+	}
+
+	seven, _ := buf.Peek(4)
+
+	if seven != 7 {
+		t.Fatal("seven != 7")
+	}
+}

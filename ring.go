@@ -64,12 +64,34 @@ func (b *Buffer[T]) write(element T) (err error) {
 	return
 }
 
+func (b *Buffer[T]) peek(n int) (element T, err error) {
+	if n >= b.Len() {
+		err = ErrEOF
+		return
+	}
+
+	readAt := (b.readPtr + n) % b.size
+
+	if readAt == b.writePtr {
+		err = ErrEOF
+		return
+	}
+
+	element = b.data[readAt]
+
+	return
+}
+
 func (b *Buffer[T]) ReadOne() (element T, err error) {
 	return b.read()
 }
 
 func (b *Buffer[T]) WriteOne(element T) (err error) {
 	return b.write(element)
+}
+
+func (b *Buffer[T]) Peek(n int) (element T, err error) {
+	return b.peek(n)
 }
 
 func (b *Buffer[T]) Write(p []T) (n int, err error) {
